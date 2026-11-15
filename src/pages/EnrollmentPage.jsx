@@ -16,8 +16,8 @@ function EnrollmentPage({ offer, profile, onBack, onSubmit }) {
     startDate: "2026-12-01",
     endDate: "2027-02-28",
     modality: offer?.modality || "Presencial",
-    schedule: offer?.schedule || "",
-    stipend: offer?.stipend || "",
+    schedule: offer?.schedule ? (Number(offer.schedule.match(/\d+/)?.[0] || 0) < 40 ? "Part time" : "Full time") : "Full time",
+    stipend: offer?.stipend ? offer.stipend.replace(/\D/g, "") : "",
   });
   const [documents, setDocuments] = useState({ acceptance: false, regularity: false });
   const update = (key, value) => setDraft((current) => ({ ...current, [key]: value }));
@@ -44,7 +44,7 @@ function EnrollmentPage({ offer, profile, onBack, onSubmit }) {
           </section>
           <section className="form-section">
             <div className="form-section-heading"><span className="section-number">03</span><div><h2>Fechas y condiciones</h2><p>Confirma la jornada acordada para tu práctica.</p></div></div>
-            <div className="form-grid"><label>Fecha de inicio<input type="date" value={draft.startDate} onChange={(event) => update("startDate", event.target.value)} required /></label><label>Fecha de término<input type="date" value={draft.endDate} onChange={(event) => update("endDate", event.target.value)} required /></label><label>Modalidad<select value={draft.modality} onChange={(event) => update("modality", event.target.value)}><option>Híbrida</option><option>Presencial</option><option>Remota</option></select></label><label>Jornada<input value={draft.schedule} onChange={(event) => update("schedule", event.target.value)} required /></label><label>Sueldo / asignación mensual<input value={draft.stipend} onChange={(event) => update("stipend", event.target.value)} /></label><label>Estudiante<input value={draft.studentName} onChange={(event) => update("studentName", event.target.value)} required /></label><label>Correo institucional<input type="email" value={draft.studentEmail} onChange={(event) => update("studentEmail", event.target.value)} required /></label></div>
+            <div className="form-grid"><label>Fecha de inicio<input type="date" value={draft.startDate} onChange={(event) => update("startDate", event.target.value)} required /></label><label>Fecha de término<input type="date" value={draft.endDate} onChange={(event) => update("endDate", event.target.value)} required /></label><label>Modalidad<select value={draft.modality} onChange={(event) => update("modality", event.target.value)}><option>Híbrida</option><option>Presencial</option><option>Remota</option></select></label><label>Jornada<select value={draft.schedule} onChange={(event) => update("schedule", event.target.value)} required><option value="Full time">Full time</option><option value="Part time">Part time</option></select></label><label>Sueldo / asignación mensual<input type="text" inputMode="numeric" pattern="[0-9]*" value={draft.stipend} onChange={(event) => { if (/^\d*$/.test(event.target.value)) update("stipend", event.target.value); }} /></label><label>Estudiante<input value={draft.studentName} onChange={(event) => update("studentName", event.target.value)} required /></label><label>Correo institucional<input type="email" value={draft.studentEmail} onChange={(event) => update("studentEmail", event.target.value)} required /></label></div>
           </section>
           <section className="form-section">
             <div className="form-section-heading"><span className="section-number">04</span><div><h2>Documentos requeridos</h2><p>Los adjuntos se muestran como vista previa.</p></div></div>
