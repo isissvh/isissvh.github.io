@@ -1,6 +1,6 @@
 import Icon from "./Icon.jsx";
 
-function Topbar({ breadcrumbItems, navigateFromBreadcrumb, noticeOpen, setNoticeOpen, profileMenuOpen, setProfileMenuOpen, profile, changeView }) {
+function Topbar({ breadcrumbItems, navigateFromBreadcrumb, noticeOpen, setNoticeOpen, profileMenuOpen, setProfileMenuOpen, profile, changeView, theme, setTheme }) {
   return (
     <header className="topbar">
           <nav className="breadcrumb" aria-label="Migas de pan">
@@ -12,6 +12,15 @@ function Topbar({ breadcrumbItems, navigateFromBreadcrumb, noticeOpen, setNotice
             </span>)}
           </nav>
           <div className="topbar-actions">
+            <button
+              className="icon-button theme-toggle"
+              type="button"
+              aria-label={theme === "dark" ? "Activar modo claro" : "Activar modo oscuro"}
+              title={theme === "dark" ? "Modo claro" : "Modo oscuro"}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <Icon name={theme === "dark" ? "sun" : "moon"} />
+            </button>
             <div className="top-action-wrap">
               <button className={"icon-button " + (noticeOpen ? "pressed" : "")} aria-label="Notificaciones" onClick={() => { setNoticeOpen(!noticeOpen); setProfileMenuOpen(false); }}>
                 <Icon name="bell" />

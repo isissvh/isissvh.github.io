@@ -46,7 +46,12 @@ function App() {
     skills: ["Python", "SQL", "React"],
     cvName: "",
   });
+  const [theme, setTheme] = usePersistentState("practicas-di-theme", "light");
   const [editingProfile, setEditingProfile] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
   useEffect(() => {
     if (postulations.some((item) => item.status !== "Enviada")) {
       setPostulations((previous) => previous.map((item) => ({ ...item, status: "Enviada" })));
@@ -241,7 +246,7 @@ function App() {
       <MainMenu activeNavView={activeNavView} changeView={changeView} postulations={postulations} enrollments={enrollments} />
 
       <div className="main-column">
-        <Topbar breadcrumbItems={breadcrumbItems} navigateFromBreadcrumb={navigateFromBreadcrumb} noticeOpen={noticeOpen} setNoticeOpen={setNoticeOpen} profileMenuOpen={profileMenuOpen} setProfileMenuOpen={setProfileMenuOpen} profile={profile} changeView={changeView} />
+        <Topbar breadcrumbItems={breadcrumbItems} navigateFromBreadcrumb={navigateFromBreadcrumb} noticeOpen={noticeOpen} setNoticeOpen={setNoticeOpen} profileMenuOpen={profileMenuOpen} setProfileMenuOpen={setProfileMenuOpen} profile={profile} changeView={changeView} theme={theme} setTheme={setTheme} />
 
         <main className="page-content">
           {activeView === "offers" && (
