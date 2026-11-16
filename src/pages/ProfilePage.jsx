@@ -2,7 +2,7 @@ import { useState } from "react";
 import Icon from "../components/Icon.jsx";
 import DocumentTile from "../components/DocumentTile.jsx";
 
-function ProfilePage({ profile, setProfile, editing, setEditing, onExplore }) {
+function ProfilePage({ profile, setProfile, editing, setEditing, onExplore, onReturnToApplication }) {
   const [draft, setDraft] = useState({
     ...profile,
     interestsText: (profile.interests || []).join(", "),
@@ -36,7 +36,7 @@ function ProfilePage({ profile, setProfile, editing, setEditing, onExplore }) {
   };
   return (
     <div className="profile-page">
-      <section className="welcome-row compact-welcome"><div><div className="eyebrow">TU INFORMACIÓN</div><h1>Mi perfil</h1><p>Actualiza tus datos personales, intereses, habilidades y currículum.</p></div></section>
+      <section className="welcome-row compact-welcome"><div><div className="eyebrow">TU INFORMACIÓN</div><h1>Mi perfil</h1><p>Actualiza tus datos personales, intereses, habilidades y currículum.</p></div>{onReturnToApplication && <button className="primary-button" type="button" onClick={onReturnToApplication}>Volver a la postulación <Icon name="arrow" size={16} /></button>}</section>
       <section className="profile-layout">
         <div className="profile-card"><div className="profile-card-banner"><div className="profile-large-avatar">JP</div></div>{editing ? <form className="profile-edit-form" onSubmit={saveProfile}>
           <label>Nombre completo<input value={draft.name} onChange={(event) => update("name", event.target.value)} required /></label>

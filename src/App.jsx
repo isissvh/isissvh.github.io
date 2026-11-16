@@ -12,7 +12,8 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import usePersistentState from "./hooks/usePersistentState.js";
 import MainMenu from "./components/MainMenu.jsx";
 import Topbar from "./components/Topbar.jsx";
-import { offers, companyDetails } from "./data/practices.js";
+import ApplicationCvDialog from "./components/ApplicationCvDialog.jsx";
+import { offers, companyDetails, parsePracticeDate } from "./data/practices.js";
 
 function App() {
   const [activeView, setActiveView] = useState("offers");
@@ -27,6 +28,7 @@ function App() {
   const [location, setLocation] = useState([]);
   const [sort, setSort] = useState("Compatibilidad");
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [applicationCvOpen, setApplicationCvOpen] = useState(false);
   const [detailReturnView, setDetailReturnView] = useState("offers");
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [savedIds, setSavedIds] = usePersistentState("practicas-di-saved", []);
@@ -71,8 +73,8 @@ function App() {
       return matchesQuery && matchesArea && matchesLocation && matchesSaved;
     });
     if (sort === "Compatibilidad") result = [...result].sort((a, b) => b.match - a.match);
-    if (sort === "Más recientes") result = [...result].sort((a, b) => b.posted.localeCompare(a.posted));
-    if (sort === "Cierre más próximo") result = [...result].sort((a, b) => a.closing.localeCompare(b.closing));
+    if (sort === "Más recientes") result = [...result].sort((a, b) => parsePracticeDate(b.posted) - parsePracticeDate(a.posted));
+    if (sort === "Cierre más próximo") result = [...result].sort((a, b) => parsePracticeDate(a.closing) - parsePracticeDate(b.closing));
     return result;
   }, [query, area, location, sort, activeView, savedIds]);
 
@@ -98,6 +100,7 @@ function App() {
     }
     setActiveView(view);
     setSelectedOffer(null);
+    setApplicationCvOpen(false);
     setSelectedCompany(null);
     setNoticeOpen(false);
     setProfileMenuOpen(false);
@@ -123,6 +126,7 @@ function App() {
   const openOffer = (offer) => {
     if (activeView !== "offerDetail" && activeView !== "enrollment") setDetailReturnView(activeView);
     setSelectedOffer(offer);
+    setApplicationCvOpen(false);
     setActiveView("offerDetail");
   };
 
@@ -132,18 +136,35 @@ function App() {
     setProfileMenuOpen(false);
   };
 
-  const postulate = () => {
+  const postulate = (cvName) => {
     if (!selectedOffer) return;
     if (postulations.some((item) => item.id === selectedOffer.id)) {
+      setApplicationCvOpen(false);
       setSelectedOffer(null);
       setActiveView("applications");
       showToast("Ya postulaste a esta práctica");
       return;
     }
-    setPostulations((previous) => [{ ...selectedOffer, submittedAt: "Hoy", status: "Enviada" }, ...previous]);
+    setPostulations((previous) => [{ ...selectedOffer, cvName, submittedAt: "Hoy", status: "Enviada" }, ...previous]);
+    setApplicationCvOpen(false);
     setSelectedOffer(null);
     setActiveView("applications");
     showToast("Postulación enviada");
+  };
+
+  const openProfileForApplication = () => {
+    setApplicationCvOpen(false);
+    setEditingProfile(true);
+    setActiveView("profile");
+    setNoticeOpen(false);
+    setProfileMenuOpen(false);
+  };
+
+  const returnToApplication = () => {
+    if (!selectedOffer) return;
+    setEditingProfile(false);
+    setActiveView("offerDetail");
+    setApplicationCvOpen(true);
   };
 
   const openEnrollment = (offer = null) => {
@@ -303,7 +324,7 @@ function App() {
             />
           )}
           {activeView === "companyDetail" && selectedCompany && <CompanyDetailPage company={selectedCompany} savedIds={savedIds} onToggleSaved={toggleSaved} onBack={() => changeView("companies")} onOpenOffer={openOffer} onViewOffers={() => { setSelectedCompany(null); setQuery(selectedCompany.name); setActiveView("offers"); }} />}
-          {activeView === "offerDetail" && selectedOffer && <OfferDetailPage offer={selectedOffer} saved={savedIds.includes(selectedOffer.id)} postulation={postulations.find((item) => item.id === selectedOffer.id)} onSave={() => toggleSaved(selectedOffer.id)} onBack={() => { setSelectedOffer(null); setActiveView(detailReturnView); }} onPostulate={postulate} onGoTracking={() => changeView("applications")} />}
+          {activeView === "offerDetail" && selectedOffer && <OfferDetailPage offer={selectedOffer} saved={savedIds.includes(selectedOffer.id)} postulation={postulations.find((item) => item.id === selectedOffer.id)} onSave={() => toggleSaved(selectedOffer.id)} onBack={() => { setSelectedOffer(null); setActiveView(detailReturnView); }} onPostulate={() => setApplicationCvOpen(true)} onGoTracking={() => changeView("applications")} />}
           {activeView === "enrollment" && <EnrollmentPage offer={selectedOffer} profile={profile} onBack={() => { setSelectedOffer(null); setActiveView("enrollments"); }} onSubmit={submitEnrollment} />}
           {activeView === "applications" && <TrackingPage postulations={postulations} enrollments={enrollments} onOpenOffer={openOffer} onOpenLogbook={openLogbook} onExplore={() => changeView("offers")} />}
           {activeView === "enrollments" && <EnrollmentsPage enrollments={enrollments} onStartEnrollment={() => openEnrollment()} onOpenLogbook={openLogbook} />}
@@ -315,11 +336,21 @@ function App() {
               editing={editingProfile}
               setEditing={setEditingProfile}
               onExplore={() => changeView("offers")}
+              onReturnToApplication={selectedOffer ? returnToApplication : null}
             />
           )}
         </main>
         <footer className="page-footer"><span>Prácticas DI <span className="footer-dot">·</span> Departamento de Informática UTFSM</span></footer>
       </div>
+      {activeView === "offerDetail" && applicationCvOpen && selectedOffer && (
+        <ApplicationCvDialog
+          offer={selectedOffer}
+          profile={profile}
+          onClose={() => setApplicationCvOpen(false)}
+          onOpenProfile={openProfileForApplication}
+          onSubmit={postulate}
+        />
+      )}
       {toast && <div className="toast" role="status" aria-live="polite"><span className="toast-icon"><Icon name="check" size={15} /></span>{toast}</div>}
     </div>
   );
