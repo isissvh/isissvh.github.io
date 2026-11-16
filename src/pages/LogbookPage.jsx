@@ -144,7 +144,7 @@ function PracticeLogbook({ selectedPractice, items, onSelect, entries, setEntrie
   );
 }
 
-function LogbookPage({ applications: items, selectedId: preferredId, entries, setEntries, onExplore }) {
+function LogbookPage({ applications: items, selectedId: preferredId, entries, setEntries, onInscription }) {
   const [selectedId, setSelectedId] = useState(preferredId ?? items[0]?.id ?? "");
   useEffect(() => {
     if (preferredId != null) setSelectedId(preferredId);
@@ -155,7 +155,7 @@ function LogbookPage({ applications: items, selectedId: preferredId, entries, se
       <section className="welcome-row compact-welcome"><div><div className="eyebrow">REGISTRO DE ACTIVIDADES</div><h1>Bitácora de práctica</h1><p>Deja constancia de tus avances, aprendizajes y tareas realizadas.</p></div></section>
       {selectedPractice
         ? <PracticeLogbook key={selectedPractice.id} selectedPractice={selectedPractice} items={items} onSelect={setSelectedId} entries={entries} setEntries={setEntries} />
-        : <EmptyState title="Tu bitácora aparecerá al inscribirte" description="Registra una práctica desde Inscripciones para comenzar a guardar actividades." action="Explorar prácticas" onAction={onExplore} />}
+        : <EmptyState title="Tu bitácora aparecerá al inscribirte" description="Registra una práctica desde Inscripciones para comenzar a guardar actividades." action="Inscribir una práctica" onAction={onInscription} />}
     </>
   );
 }

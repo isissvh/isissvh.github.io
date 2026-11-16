@@ -328,7 +328,7 @@ function App() {
           {activeView === "enrollment" && <EnrollmentPage offer={selectedOffer} profile={profile} onBack={() => { setSelectedOffer(null); setActiveView("enrollments"); }} onSubmit={submitEnrollment} />}
           {activeView === "applications" && <TrackingPage postulations={postulations} enrollments={enrollments} onOpenOffer={openOffer} onOpenLogbook={openLogbook} onExplore={() => changeView("offers")} />}
           {activeView === "enrollments" && <EnrollmentsPage enrollments={enrollments} onStartEnrollment={() => openEnrollment()} onOpenLogbook={openLogbook} />}
-          {activeView === "logbook" && <LogbookPage applications={enrollments} selectedId={logbookSelectedId} entries={logEntries} setEntries={setLogEntries} onExplore={() => changeView("offers")} />}
+          {activeView === "logbook" && <LogbookPage applications={enrollments} selectedId={logbookSelectedId} entries={logEntries} setEntries={setLogEntries} onInscription={() => changeView("enrollments")} />}
           {activeView === "profile" && (
             <ProfilePage
               profile={profile}
