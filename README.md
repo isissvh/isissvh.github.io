@@ -13,12 +13,5 @@ Abre la dirección local que indique Vite. Para generar una versión estática:
 
     npm run build
 
-## Flujos cubiertos
 
-1. Explorar vacantes, revisar una ficha estandarizada e iniciar una postulación simulada.
-2. Buscar **VOLVO CHILE SPA** en el directorio de empresas y revisar su perfil.
-3. Buscar **Python** y abrir una práctica compatible.
-4. Filtrar por **Las Condes** y revisar una vacante.
-
-También funcionan las prácticas guardadas, el resumen de postulaciones, la edición básica del perfil y la guía rápida. Los datos de empresas, fechas y vacantes son demostrativos; no representan una oferta laboral vigente.
-
+También funcionan las prácticas guardadas, el resumen de postulaciones y la edición básica del perfil. Los datos de empresas, fechas y vacantes son demostrativos; no representan una oferta laboral vigente.
